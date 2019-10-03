@@ -34,7 +34,7 @@ public class APIController {
         json.put("mobile", user.getMobile());
         json.put("others", user.getOthers());
         IndexRequest indexRequest = new IndexRequest("myindex")
-                .id("1")
+                .id(user.getId())
                 .source(json);
         IndexResponse indexResponse = null;
         try {
@@ -47,10 +47,10 @@ public class APIController {
         return ResponseEntity.ok(indexResponse);
     }
 
-    @GetMapping("get")
-    public ResponseEntity getAPI() {
+    @GetMapping("get/{id}")
+    public ResponseEntity getAPI(@PathVariable("id") String value) {
         GetRequest getRequest = new GetRequest("myindex")
-                .id("1");
+                .id(value);
         GetResponse getResponse = null;
         try {
             getResponse = restHighLevelClient.get(getRequest, RequestOptions.DEFAULT);
@@ -62,8 +62,8 @@ public class APIController {
         return ResponseEntity.ok(getResponse);
     }
 
-    @PostMapping("update")
-    public ResponseEntity updateAPI(@RequestBody User user) {
+    @PostMapping("update/{id}")
+    public ResponseEntity updateAPI(@RequestBody User user, @PathVariable("id") String value) {
         Map<String, Object> json = new HashMap<>();
         json.put("email", user.getEmail());
 
@@ -71,7 +71,7 @@ public class APIController {
                 .id("1")
                 .source(json);
 
-        UpdateRequest updateRequest = new UpdateRequest("myindex", "1")
+        UpdateRequest updateRequest = new UpdateRequest("myindex", value)
                 .doc(indexRequest);
         UpdateResponse updateResponse = null;
         try {
@@ -84,9 +84,9 @@ public class APIController {
         return ResponseEntity.ok(updateResponse);
     }
 
-    @GetMapping("delete")
-    public ResponseEntity deleteAPI() {
-        DeleteRequest deleteRequest = new DeleteRequest("myindex", "1");
+    @GetMapping("delete/{id}")
+    public ResponseEntity deleteAPI(@PathVariable("id") String value) {
+        DeleteRequest deleteRequest = new DeleteRequest("myindex", value);
         DeleteResponse deleteResponse = null;
         try {
             deleteResponse = restHighLevelClient.delete(deleteRequest, RequestOptions.DEFAULT);
