@@ -113,7 +113,10 @@ public class APIController {
     @PostMapping("update/{id}")
     public ResponseEntity updateAPI(@RequestBody User user, @PathVariable("id") String value) {
         Map<String, Object> json = new HashMap<>();
+        json.put("name", user.getName());
         json.put("email", user.getEmail());
+        json.put("mobile", user.getMobile());
+        json.put("others", user.getOthers());
 
         IndexRequest indexRequest = new IndexRequest("myindex")
                 .id("1")
