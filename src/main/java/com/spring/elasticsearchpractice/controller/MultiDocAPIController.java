@@ -8,6 +8,11 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.core.MultiTermVectorsRequest;
+import org.elasticsearch.client.core.MultiTermVectorsResponse;
+import org.elasticsearch.client.core.TermVectorsRequest;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
@@ -161,6 +166,41 @@ public class MultiDocAPIController {
             return ResponseEntity.ok(response);
         } catch (IOException e) {
             System.out.println("There is an Exception in deleteByQuery method.");
+            e.printStackTrace();
+        }
+
+        return (ResponseEntity) ResponseEntity.badRequest();
+    }
+
+    /**
+     * Multi term vectors api response entity.
+     *
+     * @return the response entity
+     */
+    @GetMapping("multitermvectors")
+    public ResponseEntity multiTermVectorsAPI() {
+
+        MultiTermVectorsRequest multiTermVectorsRequest = new MultiTermVectorsRequest();
+        XContentBuilder docBuilder = null;
+        try {
+            docBuilder = XContentFactory.jsonBuilder();
+            docBuilder.startObject().field("name", "Another Name").endObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        TermVectorsRequest termVectorsRequest1 = new TermVectorsRequest("myindex", docBuilder);
+        multiTermVectorsRequest.add(termVectorsRequest1);
+
+        TermVectorsRequest termVectorsRequest2 = new TermVectorsRequest("myindex", "2");
+        termVectorsRequest2.setFields("name");
+        multiTermVectorsRequest.add(termVectorsRequest2);
+
+        MultiTermVectorsResponse multiTermVectorsResponse = null;
+        try {
+            multiTermVectorsResponse = restHighLevelClient.mtermvectors(multiTermVectorsRequest, RequestOptions.DEFAULT);
+            return ResponseEntity.ok(multiTermVectorsResponse);
+        } catch (IOException e) {
+            System.out.println("There is an Exception in Multi term vectors method.");
             e.printStackTrace();
         }
 
