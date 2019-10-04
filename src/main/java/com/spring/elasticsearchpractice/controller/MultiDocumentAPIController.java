@@ -32,7 +32,7 @@ import java.io.IOException;
  */
 @RestController
 @RequestMapping("api")
-public class MultiDocAPIController {
+public class MultiDocumentAPIController {
 
     /**
      * The Rest high level client.
