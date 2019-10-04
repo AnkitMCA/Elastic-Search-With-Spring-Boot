@@ -26,7 +26,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("api")
-public class APIController {
+public class DocumentAPIController {
 
     /**
      * The Rest high level client.
