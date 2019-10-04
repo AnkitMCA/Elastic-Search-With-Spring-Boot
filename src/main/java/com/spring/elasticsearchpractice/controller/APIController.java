@@ -160,6 +160,11 @@ public class APIController {
         return (ResponseEntity) ResponseEntity.badRequest();
     }
 
+    /*
+    Term Vectors API returns information and statistics on terms in the fields of a particular document.
+    The document could be stored in the index or artificially provided by the user.
+     */
+
     /**
      * Term vectors api response entity.
      *
