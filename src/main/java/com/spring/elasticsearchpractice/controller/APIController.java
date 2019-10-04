@@ -53,12 +53,13 @@ public class APIController {
         IndexResponse indexResponse = null;
         try {
             indexResponse = restHighLevelClient.index(indexRequest, RequestOptions.DEFAULT);
+            return ResponseEntity.ok(indexResponse);
         } catch (IOException e) {
             System.out.println("There is an Exception in index method.");
             e.printStackTrace();
         }
 
-        return ResponseEntity.ok(indexResponse);
+        return (ResponseEntity) ResponseEntity.badRequest();
     }
 
     /**
@@ -74,12 +75,13 @@ public class APIController {
         Boolean exists = false;
         try {
             exists = restHighLevelClient.exists(getRequest, RequestOptions.DEFAULT);
+            return ResponseEntity.ok(exists);
         } catch (IOException e) {
             System.out.println("There is an Exception in exists method.");
             e.printStackTrace();
         }
 
-        return ResponseEntity.ok(exists);
+        return (ResponseEntity) ResponseEntity.badRequest();
     }
 
     /**
@@ -95,12 +97,13 @@ public class APIController {
         GetResponse getResponse = null;
         try {
             getResponse = restHighLevelClient.get(getRequest, RequestOptions.DEFAULT);
+            return ResponseEntity.ok(getResponse);
         } catch (IOException e) {
             System.out.println("There is an Exception in get method.");
             e.printStackTrace();
         }
 
-        return ResponseEntity.ok(getResponse);
+        return (ResponseEntity) ResponseEntity.badRequest();
     }
 
     /**
@@ -127,12 +130,13 @@ public class APIController {
         UpdateResponse updateResponse = null;
         try {
             updateResponse = restHighLevelClient.update(updateRequest, RequestOptions.DEFAULT);
+            return ResponseEntity.ok(updateResponse);
         } catch (IOException e) {
             System.out.println("There is an Exception in update method.");
             e.printStackTrace();
         }
 
-        return ResponseEntity.ok(updateResponse);
+        return (ResponseEntity) ResponseEntity.badRequest();
     }
 
     /**
@@ -147,12 +151,13 @@ public class APIController {
         DeleteResponse deleteResponse = null;
         try {
             deleteResponse = restHighLevelClient.delete(deleteRequest, RequestOptions.DEFAULT);
+            return ResponseEntity.ok(deleteResponse);
         } catch (IOException e) {
             System.out.println("There is an Exception in delete method.");
             e.printStackTrace();
         }
 
-        return ResponseEntity.ok(deleteResponse);
+        return (ResponseEntity) ResponseEntity.badRequest();
     }
 
     /**
@@ -181,11 +186,12 @@ public class APIController {
         TermVectorsResponse termVectorsResponse = null;
         try {
             termVectorsResponse = restHighLevelClient.termvectors(termVectorsRequest, RequestOptions.DEFAULT);
+            return ResponseEntity.ok(termVectorsResponse);
         } catch (IOException e) {
             System.out.println("There is an Exception in term vectors method.");
             e.printStackTrace();
         }
 
-        return ResponseEntity.ok(termVectorsResponse);
+        return (ResponseEntity) ResponseEntity.badRequest();
     }
 }
