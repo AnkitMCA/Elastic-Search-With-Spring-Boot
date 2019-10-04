@@ -9,7 +9,9 @@ import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
+import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 import org.elasticsearch.index.reindex.ReindexRequest;
 import org.elasticsearch.index.reindex.UpdateByQueryRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,6 +132,7 @@ public class MultiDocAPIController {
     @GetMapping("updatebyquery")
     public ResponseEntity updateByQuery() {
         UpdateByQueryRequest updateByQueryRequest = new UpdateByQueryRequest("myindex", "otherindex");
+        updateByQueryRequest.setQuery(new TermQueryBuilder("mobile", "9876543210"));
 
         BulkByScrollResponse response = null;
         try {
@@ -139,6 +142,28 @@ public class MultiDocAPIController {
             System.out.println("There is an Exception in updateByQuery method.");
             e.printStackTrace();
         }
+        return (ResponseEntity) ResponseEntity.badRequest();
+    }
+
+    /**
+     * Delete by query response entity.
+     *
+     * @return the response entity
+     */
+    @GetMapping("deletebyquery")
+    public ResponseEntity deleteByQuery() {
+        DeleteByQueryRequest deleteByQueryRequest = new DeleteByQueryRequest("anotherindex");
+        deleteByQueryRequest.setQuery(new TermQueryBuilder("mobile", "9876543210"));
+
+        BulkByScrollResponse response = null;
+        try {
+            response = restHighLevelClient.deleteByQuery(deleteByQueryRequest, RequestOptions.DEFAULT);
+            return ResponseEntity.ok(response);
+        } catch (IOException e) {
+            System.out.println("There is an Exception in deleteByQuery method.");
+            e.printStackTrace();
+        }
+
         return (ResponseEntity) ResponseEntity.badRequest();
     }
 
