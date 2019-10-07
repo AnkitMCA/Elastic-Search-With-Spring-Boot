@@ -1,6 +1,8 @@
 package com.spring.elasticsearchpractice.controller;
 
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.elasticsearch.action.admin.indices.open.OpenIndexRequest;
+import org.elasticsearch.action.admin.indices.open.OpenIndexResponse;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -108,6 +110,46 @@ public class IndexAPIsController {
             return ResponseEntity.ok(response);
         } catch (IOException e) {
             System.out.println("There is an Exception in indexExists method.");
+            e.printStackTrace();
+        }
+
+        return (ResponseEntity) ResponseEntity.badRequest();
+    }
+
+    /**
+     * Open index response entity.
+     *
+     * @return the response entity
+     */
+    @GetMapping("openindex")
+    public ResponseEntity openIndexAPI() {
+        OpenIndexRequest openIndexRequest = new OpenIndexRequest("myindex2");
+        OpenIndexResponse openIndexResponse = null;
+        try {
+            openIndexResponse = restHighLevelClient.indices().open(openIndexRequest, RequestOptions.DEFAULT);
+            return ResponseEntity.ok(openIndexResponse);
+        } catch (IOException e) {
+            System.out.println("There is an Exception in openIndex method.");
+            e.printStackTrace();
+        }
+
+        return (ResponseEntity) ResponseEntity.badRequest();
+    }
+
+    /**
+     * Close index api response entity.
+     *
+     * @return the response entity
+     */
+    @GetMapping("closeindex")
+    public ResponseEntity closeIndexAPI() {
+        CloseIndexRequest closeIndexRequest = new CloseIndexRequest("myindex2");
+        CloseIndexResponse closeIndexResponse = null;
+        try {
+            closeIndexResponse = restHighLevelClient.indices().close(closeIndexRequest, RequestOptions.DEFAULT);
+            return ResponseEntity.ok(closeIndexResponse);
+        } catch (IOException e) {
+            System.out.println("There is an Exception in closeIndex method.");
             e.printStackTrace();
         }
 
