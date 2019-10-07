@@ -24,6 +24,10 @@ public class ClusterInfoAPIsController {
     @Autowired
     RestHighLevelClient restHighLevelClient;
 
+    /*
+    Cluster information can be retrieved using the info() method.
+    */
+
     /**
      * Cluster info api response entity.
      *
@@ -42,6 +46,10 @@ public class ClusterInfoAPIsController {
         }
         return (ResponseEntity) ResponseEntity.badRequest();
     }
+
+    /*
+    The ping() method checks if the cluster is up and available to process requests and returns a boolean.
+    */
 
     /**
      * Ping info api response entity.
