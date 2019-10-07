@@ -3,10 +3,14 @@ package com.spring.elasticsearchpractice.controller;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.open.OpenIndexRequest;
 import org.elasticsearch.action.admin.indices.open.OpenIndexResponse;
+import org.elasticsearch.action.admin.indices.shrink.ResizeRequest;
+import org.elasticsearch.action.admin.indices.shrink.ResizeResponse;
+import org.elasticsearch.action.admin.indices.shrink.ResizeType;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.*;
+import org.elasticsearch.common.settings.Settings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -62,10 +66,10 @@ public class IndexAPIsController {
     @GetMapping("createindex")
     public ResponseEntity createIndexAPI() {
         CreateIndexRequest createIndexRequest = new CreateIndexRequest("demoindex");
-        /*createIndexRequest.settings(Settings.builder()
+        createIndexRequest.settings(Settings.builder()
+                .put("index.blocks.write", true)
                 .put("index.number_of_shards", 3)
-                .put("index.number_of_replicas", 2)
-        );*/
+        );
         CreateIndexResponse createIndexResponse = null;
         try {
             createIndexResponse = restHighLevelClient.indices().create(createIndexRequest, RequestOptions.DEFAULT);
@@ -150,6 +154,29 @@ public class IndexAPIsController {
             return ResponseEntity.ok(closeIndexResponse);
         } catch (IOException e) {
             System.out.println("There is an Exception in closeIndex method.");
+            e.printStackTrace();
+        }
+
+        return (ResponseEntity) ResponseEntity.badRequest();
+    }
+
+    /**
+     * Shrink index api response entity.
+     *
+     * @return the response entity
+     */
+    @GetMapping("shrinkindex")
+    public ResponseEntity shrinkIndexAPI() {
+        ResizeRequest resizeRequest = new ResizeRequest("newdemoindex", "demoindex");
+        resizeRequest.setResizeType(ResizeType.SHRINK);
+        resizeRequest.getTargetIndexRequest().settings(Settings.builder()
+                .put("index.number_of_shards", 1));
+        ResizeResponse resizeResponse = null;
+        try {
+            resizeResponse = restHighLevelClient.indices().shrink(resizeRequest, RequestOptions.DEFAULT);
+            return ResponseEntity.ok(resizeResponse);
+        } catch (IOException e) {
+            System.out.println("There is an Exception in shrinkIndex method.");
             e.printStackTrace();
         }
 
