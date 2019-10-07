@@ -16,7 +16,7 @@ import java.io.IOException;
  */
 @RestController
 @RequestMapping("api")
-public class ClusterInfoAPIController {
+public class ClusterInfoAPIsController {
 
     /**
      * The Rest high level client.
