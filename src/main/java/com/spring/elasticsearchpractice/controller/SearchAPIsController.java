@@ -21,7 +21,7 @@ import java.io.IOException;
  */
 @RestController
 @RequestMapping("api")
-public class SearchAPIController {
+public class SearchAPIsController {
 
     /**
      * The Rest high level client.
