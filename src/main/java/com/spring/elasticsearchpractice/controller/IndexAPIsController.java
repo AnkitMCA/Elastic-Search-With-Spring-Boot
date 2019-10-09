@@ -3,6 +3,8 @@ package com.spring.elasticsearchpractice.controller;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.open.OpenIndexRequest;
 import org.elasticsearch.action.admin.indices.open.OpenIndexResponse;
+import org.elasticsearch.action.admin.indices.settings.get.GetSettingsRequest;
+import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequest;
 import org.elasticsearch.action.admin.indices.shrink.ResizeRequest;
 import org.elasticsearch.action.admin.indices.shrink.ResizeResponse;
 import org.elasticsearch.action.admin.indices.shrink.ResizeType;
@@ -201,6 +203,60 @@ public class IndexAPIsController {
             return ResponseEntity.ok(resizeResponse);
         } catch (IOException e) {
             System.out.println("There is an Exception in splitIndex method.");
+            e.printStackTrace();
+        }
+
+        return (ResponseEntity) ResponseEntity.badRequest();
+    }
+
+
+    //    TODO This cloneIndexAPI method does not work properly need to complete this API.
+
+    /**
+     * Clone index api response entity.
+     *
+     * @return the response entity
+     */
+    @GetMapping("cloneindex")
+    public ResponseEntity cloneIndexAPI() {
+        ResizeRequest cloneResizeRequest = new ResizeRequest("cloneindex", "demoindex");
+        cloneResizeRequest.setResizeType(ResizeType.CLONE);
+//        cloneResizeRequest.timeout(TimeValue.timeValueMinutes(2));
+//        cloneResizeRequest.masterNodeTimeout(TimeValue.timeValueMinutes(2));
+        cloneResizeRequest.getTargetIndexRequest().settings(Settings.builder()
+                .put("index.number_of_shards", 5));
+        ResizeResponse resizeResponse = null;
+        try {
+            resizeResponse = restHighLevelClient.indices().clone(cloneResizeRequest, RequestOptions.DEFAULT);
+            return ResponseEntity.ok(resizeResponse);
+        } catch (IOException e) {
+            System.out.println("There is an Exception in cloneIndex method.");
+            e.printStackTrace();
+        }
+
+        return (ResponseEntity) ResponseEntity.badRequest();
+    }
+
+    /**
+     * Update indices settings api response entity.
+     *
+     * @return the response entity
+     */
+    @GetMapping("updateIndicesSettings")
+    public ResponseEntity updateIndicesSettingsAPI() {
+        UpdateSettingsRequest updateSettingsRequest = new UpdateSettingsRequest("myindex2");
+//        UpdateSettingsRequest updateSettingsRequest = new UpdateSettingsRequest("index2","otherindex");
+        Settings settings = Settings.builder()
+                .put("index.number_of_replicas", 2)
+                .build();
+        updateSettingsRequest.settings(settings);
+        AcknowledgedResponse updateSettingsResponse = null;
+        try {
+            updateSettingsResponse = restHighLevelClient.indices().putSettings(updateSettingsRequest,
+                    RequestOptions.DEFAULT);
+            return ResponseEntity.ok(updateSettingsResponse);
+        } catch (IOException e) {
+            System.out.println("There is an exception in updateIndicesSettings method");
             e.printStackTrace();
         }
 
