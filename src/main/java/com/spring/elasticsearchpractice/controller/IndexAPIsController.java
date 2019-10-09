@@ -68,7 +68,8 @@ public class IndexAPIsController {
         CreateIndexRequest createIndexRequest = new CreateIndexRequest("demoindex");
         createIndexRequest.settings(Settings.builder()
                 .put("index.blocks.write", true)
-                .put("index.number_of_shards", 3)
+                .put("index.number_of_shards", 5)
+                .put("index.number_of_routing_shards", 15)
         );
         CreateIndexResponse createIndexResponse = null;
         try {
@@ -167,16 +168,39 @@ public class IndexAPIsController {
      */
     @GetMapping("shrinkindex")
     public ResponseEntity shrinkIndexAPI() {
-        ResizeRequest resizeRequest = new ResizeRequest("newdemoindex", "demoindex");
-        resizeRequest.setResizeType(ResizeType.SHRINK);
-        resizeRequest.getTargetIndexRequest().settings(Settings.builder()
+        ResizeRequest shrinkResizeRequest = new ResizeRequest("shrinkindex", "demoindex");
+        shrinkResizeRequest.setResizeType(ResizeType.SHRINK);
+        shrinkResizeRequest.getTargetIndexRequest().settings(Settings.builder()
                 .put("index.number_of_shards", 1));
         ResizeResponse resizeResponse = null;
         try {
-            resizeResponse = restHighLevelClient.indices().shrink(resizeRequest, RequestOptions.DEFAULT);
+            resizeResponse = restHighLevelClient.indices().shrink(shrinkResizeRequest, RequestOptions.DEFAULT);
             return ResponseEntity.ok(resizeResponse);
         } catch (IOException e) {
             System.out.println("There is an Exception in shrinkIndex method.");
+            e.printStackTrace();
+        }
+
+        return (ResponseEntity) ResponseEntity.badRequest();
+    }
+
+    /**
+     * Split index api response entity.
+     *
+     * @return the response entity
+     */
+    @GetMapping("splitindex")
+    public ResponseEntity splitIndexAPI() {
+        ResizeRequest splitResizeRequest = new ResizeRequest("splitindex", "demoindex");
+        splitResizeRequest.setResizeType(ResizeType.SPLIT);
+        splitResizeRequest.getTargetIndexRequest().settings(Settings.builder()
+                .put("index.number_of_shards", 15));
+        ResizeResponse resizeResponse = null;
+        try {
+            resizeResponse = restHighLevelClient.indices().split(splitResizeRequest, RequestOptions.DEFAULT);
+            return ResponseEntity.ok(resizeResponse);
+        } catch (IOException e) {
+            System.out.println("There is an Exception in splitIndex method.");
             e.printStackTrace();
         }
 
